@@ -62,11 +62,11 @@ void snes_controller_handle_state(struct snes_classic_state *state, struct car_s
 
     uint8_t new_servo_degree = car->servo_degree;
 
-    if (snes_state.r_pressed && car->servo_degree > 0)
-        new_servo_degree -= 10;
+    if (snes_state.r_pressed && car->servo_degree > 20)
+        new_servo_degree -= 20;
 
-    if (snes_state.l_pressed && car->servo_degree < 250)
-        new_servo_degree += 10;
+    if (snes_state.l_pressed && car->servo_degree < 230)
+        new_servo_degree += 20;
 
     car_state_servo_degree_set(car, new_servo_degree);
 }
@@ -83,12 +83,13 @@ int main(void)
     PORTD &= ~_BV(PORTD3);
 
     /* For Ultrasonic Sensor */
-    DDRC |= _BV(DDC4);
-    DDRC &= ~_BV(DDC5);
+    DDRC |= _BV(DDC5);
+    DDRC &= ~_BV(DDC4);
     ultrasonic_init();
 
     int snes_controller_attached = !snes_classic_init();
 
+    int i = 0;
     while (1) {
         if (snes_controller_attached) {
             snes_classic_read_state(&snes_state);
@@ -100,7 +101,13 @@ int main(void)
 
         car_state_apply(&car_state);
 
-        ultrasonic_read_distance();
+        if (!i)
+            ultrasonic_read_distance();
+
+        i++;
+        if (i == 15)
+            i = 0;
+
         _delay_ms(16);
     }
 

@@ -119,7 +119,6 @@ static void handle_gamepad_state()
     }
 }
 
-
 void bt_gamepad_init(void)
 {
     serial_init(handle_serial_char);
@@ -178,11 +177,14 @@ void bt_gamepad_apply(struct car_state *car)
     }
 
     int servo_degree = car->servo_degree;
-    if (gamepad_state.buttons[1] && car->servo_degree < 236)
-        servo_degree += 20;
+    if (gamepad_state.buttons[1])
+        servo_degree = 192;
 
-    if (gamepad_state.buttons[3] && car->servo_degree > 20)
-        servo_degree -= 20;
+    if (gamepad_state.buttons[3])
+        servo_degree = 64;
+
+    if (gamepad_state.buttons[2])
+        servo_degree = 128;
 
     car_state_servo_degree_set(car, servo_degree);
 }

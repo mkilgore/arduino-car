@@ -145,7 +145,7 @@ void servo_set(int degree)
     uint8_t sreg = SREG;
     cli();
 
-    servos[0].duty_cycle_ticks = SERVO_DUTY_CYCLE_MIN_TICKS + degree * (SERVO_DUTY_CYCLE_PULSE_TICKS / 256);
+    servos[0].duty_cycle_ticks = SERVO_DUTY_CYCLE_MIN_TICKS + (uint16_t)degree * (SERVO_DUTY_CYCLE_PULSE_TICKS / 256);
 
     SREG = sreg;
 }
